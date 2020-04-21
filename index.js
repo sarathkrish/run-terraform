@@ -16,12 +16,17 @@ try{
     };
 
     // Fetching WorkSpaceId
-    const terraformWorkSpaceEndpoint = "https://"+terraformHost+"/api/v2/organizations/"+organizationName+"/workspaces";
-    const res = await this.axios.get(terraformWorkSpaceEndpoint);
-    if(!res.data.data.id){
-      core.setFailed("WorkSpace "+workSpaceName+" Not Found!");
-    }
-    const workSpaceId = res.data.data.id;
+    const terraformWorkSpaceEndpoint = "https://"+terraformHost+"/api/v2/organizations/"+organizationName+"/workspaces/"+workSpaceName;
+    const workSpaceId = '';
+    axios.get(terraformWorkSpaceEndpoint,options)
+    .then((response) => {
+      console.log("WorkSpace Get Response:"+ JSON.stringify(response.data));
+       workSpaceId = res.data.data.id;
+    }, (error) => {
+      console.error("error:"+JSON.stringify(error.response.data));
+      core.setFailed(error.message);
+    });
+    
     console.log("workSpaceId:"+workSpaceId)
 
     
@@ -39,15 +44,15 @@ try{
                       }
                     }
                    }};
-    console.log("request:" + JSON.stringify(request));
+    console.log("run request:" + JSON.stringify(request));
    
    // Invoking Terraform Run API
     axios.post(terraformRunEndpoint, request, options)
       .then((response) => {
-        console.log("success:"+ JSON.stringify(response.data));
+        console.log("run success:"+ JSON.stringify(response.data));
         core.setOutput("runId", response.data.data.id);
       }, (error) => {
-        console.error("error:"+JSON.stringify(error.response.data));
+        console.error("run error:"+JSON.stringify(error.response.data));
         core.setFailed(error.message);
       });
 
