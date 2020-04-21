@@ -21,7 +21,7 @@ try{
     axios.get(terraformWorkSpaceEndpoint,options)
     .then((response) => {
       console.log("WorkSpace Get Response:"+ JSON.stringify(response.data));
-       workSpaceId = res.data.data.id;
+       workSpaceId = response.data.data.id;
     }, (error) => {
       console.error("error:"+JSON.stringify(error.response.data));
       core.setFailed(error.message);
