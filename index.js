@@ -1,6 +1,8 @@
 const core = require('@actions/core');
 const axios = require('axios');
 
+export default async function main() {
+
 try{
     const workSpaceName = core.getInput('workSpaceName');
     const organizationName = core.getInput('organizationName');
@@ -17,21 +19,11 @@ try{
 
     // Fetching WorkSpaceId
     const terraformWorkSpaceEndpoint = "https://"+terraformHost+"/api/v2/organizations/"+organizationName+"/workspaces/"+workSpaceName;
-    var workSpaceId = '';
-    axios.get(terraformWorkSpaceEndpoint,options)
-    .then((response) => {
-      console.log("WorkSpace Get Response:"+ JSON.stringify(response.data));
-       workSpaceId = response.data.data.id;
-    }, (error) => {
-      console.error("error:"+JSON.stringify(error.response.data));
-      core.setFailed(error.message);
-    });
-    
+    const response = await axios.get(terraformWorkSpaceEndpoint,options);   
+    const workSpaceId = response.data.data.id;
     console.log("workSpaceId:"+workSpaceId)
 
-    
     const terraformRunEndpoint = "https://"+terraformHost+"/api/v2/runs";
-
     let request = { data : { 
                     attributes: { "is-destroy" : isDestroy, "message" : message },
                     type: "runs",
@@ -59,3 +51,6 @@ try{
 } catch(error){
     core.setFailed(error.message);
 }
+}
+
+main();
