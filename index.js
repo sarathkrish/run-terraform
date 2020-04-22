@@ -1,7 +1,7 @@
 const core = require('@actions/core');
 const axios = require('axios');
 
-export default async function main() {
+ async function main() {
 
 try{
     const workSpaceName = core.getInput('workSpaceName');
